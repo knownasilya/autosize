@@ -3,40 +3,38 @@
 // license: www.opensource.org/licenses/mit-license.php
 
 (function ($, undefined) {
-    var 
-    hidden = 'hidden',
-    copy = '<textarea style="position:absolute; top:-9999px; left:-9999px; right:auto; bottom:auto; word-wrap:break-word; height:0 !important; min-height:0 !important; overflow:hidden">',
-    // line-height is omitted because IE7/IE8 doesn't return the correct value.
-    copyStyle = [
-        'fontFamily',
-        'fontSize',
-        'fontWeight',
-        'fontStyle',
-        'letterSpacing',
-        'textTransform',
-        'wordSpacing'
-    ],
-    oninput = 'oninput',
-    onpropertychange = 'onpropertychange',
-    test = $(copy)[0];
+    var hidden = 'hidden',
+        copy = '<textarea style="position:absolute; top:-9999px; left:-9999px; right:auto; bottom:auto; word-wrap:break-word; height:0 !important; min-height:0 !important; overflow:hidden">',
+        // line-height is omitted because IE7/IE8 doesn't return the correct value.
+        copyStyle = [
+            'fontFamily',
+            'fontSize',
+            'fontWeight',
+            'fontStyle',
+            'letterSpacing',
+            'textTransform',
+            'wordSpacing'
+        ],
+        onInput = 'oninput',
+        onPropertyChange = 'onpropertychange',
+        test = $(copy)[0];
 
     test.setAttribute(oninput, "return");
 
-    if ($.isFunction(test[oninput]) || onpropertychange in test) {
+    if ($.isFunction(test[onInput]) || onPropertyChange in test) {
         $.fn.autosize = function (className) {
             return this.each(function () {
-                var 
-                ta = this,
-                $ta = $(ta).css({
-                    overflow: hidden, 
-                    overflowY: hidden, 
-                    wordWrap: 'break-word'
-                }),
-                mirror = $(copy).addClass(className || 'autosizejs')[0],
-                minHeight = $ta.height(),
-                maxHeight = parseInt($ta.css('maxHeight'), 10),
-                active,
-                i = copyStyle.length;
+                var ta = this,
+                    $ta = $(ta).css({
+                        overflow: hidden, 
+                        overflowY: hidden, 
+                        wordWrap: 'break-word'
+                    }),
+                    mirror = $(copy).addClass(className || 'autosizejs')[0],
+                    minHeight = $ta.height(),
+                    maxHeight = parseInt($ta.css('maxHeight'), 10),
+                    active,
+                    i = copyStyle.length;
 
                 // Opera returns '-1px' when max-height is set to 'none'.
                 maxHeight = maxHeight && maxHeight > 0 ? maxHeight : 9e4;
@@ -99,19 +97,19 @@
 
                 $('body').append(mirror);
 
-                if (onpropertychange in ta) {
-                    if (oninput in ta) {
+                if (onPropertyChange in ta) {
+                    if (onInput in ta) {
                         // Detects IE9.  IE9 does not fire onpropertychange or oninput for deletions,
                         // so binding to onkeyup to catch most of those occassions.  There is no way that I
                         // know of to detect something like 'cut' in IE9.
-                        ta[oninput] = ta.onkeyup = adjust;
+                        ta[onInput] = ta.onkeyup = adjust;
                     } else {
                         // IE7 / IE8
-                        ta[onpropertychange] = adjust;
+                        ta[onPropertyChange] = adjust;
                     }
                 } else {
                     // Modern Browsers
-                    ta[oninput] = adjust;
+                    ta[onInput] = adjust;
                 }
 
                 $(window).resize(adjust);
